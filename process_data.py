@@ -3,6 +3,7 @@ from typing import List, Any
 import os
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+from datetime import datetime
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -74,8 +75,7 @@ class DataProcessor:
         else:
              self.X_train, self.X_test, self.Y_train, self.Y_test = x_temp, None, y_temp, None
         
-def train_model(X_train, Y_train):
-    basic_model(X_train, Y_train, 100)
+    
 
 
 ## ! ! ! TODO deal with str more elegantly, automate normalizing numeric columns
@@ -100,5 +100,6 @@ if __name__ == "__main__":
     print(X_train.shape)
     # print(Y_test.shape)
 
-    model = train_model(X_train, Y_train)
-    print(model)
+    model = basic_model(X_train, Y_train, 100)
+    filename = f"model_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.h5"
+    model.save(filename)

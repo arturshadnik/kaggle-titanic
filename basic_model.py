@@ -15,7 +15,7 @@ def basic_model(X,
         tf.keras.layers.Dropout(dropout),
         tf.keras.layers.Dense(128, activation='relu', input_shape=(input_size,)),
         tf.keras.layers.Dropout(dropout),
-        tf.keras.layers.Dense(10, activation='sigmoid')
+        tf.keras.layers.Dense(10, activation='softmax')
     ])
 
     model.compile(optimizer=optimizer,
