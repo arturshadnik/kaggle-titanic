@@ -3,12 +3,6 @@ from typing import List, Any
 import os
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from datetime import datetime
-
-from dotenv import load_dotenv
-load_dotenv()
-
-from basic_model import basic_model
 
 class DataProcessor:
 
@@ -59,6 +53,12 @@ class DataProcessor:
             except Exception as e:
                 print(e)
 
+    def str_to_label(self, column, mapping):
+        try:
+            self.data[column].replace(mapping, inplace=True)
+        except Exception as e:
+            print(e)
+
     def get_all_datatypes(self):
         return self.data.dtypes
     
@@ -76,30 +76,3 @@ class DataProcessor:
              self.X_train, self.X_test, self.Y_train, self.Y_test = x_temp, None, y_temp, None
         
     
-
-
-## ! ! ! TODO deal with str more elegantly, automate normalizing numeric columns
-if __name__ == "__main__":
-    processor = DataProcessor(os.getenv("TRAIN_DATA_PATH"))
-    processor.load_data_from_csv()
-    processor.preview_data(5)
-
-    mean_age = processor.get_mean_of_numerical_column('Age').__round__(2)
-    processor.fill_missing_values(["Age"], [mean_age])
-
-    datatypes = processor.get_all_datatypes()
-    numeric_columns = ["Pclass","SibSp", "Parch", "Fare"]
-    processor.normalize_numeric_columns(numeric_columns)
-    columns_to_drop = ["Name", "Sex", "Ticket", "Cabin", "Embarked", "PassengerId"]
-    processor.drop_columns(columns_to_drop)
-
-    processor.preview_data()
-
-    processor.split_test_train_data("Survived")
-    X_train, X_test, Y_train, Y_test = processor.X_train, processor.X_test, processor.Y_train, processor.Y_test
-    print(X_train.shape)
-    # print(Y_test.shape)
-
-    model = basic_model(X_train, Y_train, 100)
-    filename = f"model_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.h5"
-    model.save(filename)
